@@ -11,9 +11,41 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+options(width = 137)
 ```
 # GlobCover data
 
 <!-- badges: start -->
 <!-- badges: end -->
+
+GlobCover from [ESA](http://due.esrin.esa.int/page_globcover.php) proposes
+global raster file (300-m resolution) of land cover for 2005 and 2009. After
+having been croped to the province of Vientiane prefecture (see
+[cleaning pipeline](https://ecomore2.github.io/globcover/make_data.html)),
+the `.GTiff` files are available here:
+
+* [GlobCover2005_V2.2.tif](https://www.dropbox.com/s/gp790fng3awwb7t/Globcover2005_V2.2.tif?raw=1) (37 Ko)
+* [GlobCover2009_V2.3.tif](https://www.dropbox.com/s/d2fdtq8jofs38tf/Globcover2009_V2.3.tif?raw=1) (38 Ko)
+
+The files can be downloaded directly from R as so:
+
+```{r eval = FALSE}
+library(raster)
+tmp <- tempfile(fileext = ".tif")
+download.file("https://www.dropbox.com/s/gp790fng3awwb7t/Globcover2005_V2.2.tif?raw=1", tmp)
+Globcover2005_V2.2 <- raster(tmp)
+download.file("https://www.dropbox.com/s/d2fdtq8jofs38tf/Globcover2009_V2.3.tif?raw=1", tmp)
+Globcover2009_V2.3 <- raster(tmp)
+```
+
+The legend of these raster files are:
+
+```{r include = FALSE}
+legend <- readxl::read_excel("data-raw/Glocover2005_V2.2/Globcover_Legend.xls")
+```
+
+```{r echo = FALSE}
+print(legend[, c("Value", "Label")], n = 23)
+```
 
