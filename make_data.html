@@ -398,6 +398,32 @@ title wherever you want to display the reference list.
   margin-right: auto;
 }
 </style>
+<pre class="r"><code>&gt; library(sp)
+&gt; library(raster)
+&gt; library(ecomore)</code></pre>
+<p>Downloading the 2009 GlobCover data (** 300-m resolution**) from <a href="http://due.esrin.esa.int/page_globcover.php">ESA</a>:</p>
+<pre class="r"><code>&gt; if (! dir.exists(&quot;data-raw&quot;)) dir.create(&quot;data-raw&quot;)
+&gt; download.file(&quot;http://due.esrin.esa.int/files/Globcover2009_V2.3_Global_.zip&quot;, &quot;data-raw/Globcover2009_V2.3.zip&quot;)
+&gt; download.file(&quot;http://due.esrin.esa.int/files/Globcover_V2.2_Global.zip&quot;, &quot;data-raw/Globcover2005_V2.2.zip&quot;)</code></pre>
+<p>Unzipping:</p>
+<pre class="r"><code>&gt; unzip(&quot;data-raw/Globcover2009_V2.3.zip&quot;, exdir = &quot;data-raw/Glocover2009_V2.3&quot;)
+&gt; unzip(&quot;data-raw/Globcover2005_V2.2.zip&quot;, exdir = &quot;data-raw/Glocover2005_V2.2&quot;)</code></pre>
+<p>Loading:</p>
+<pre class="r"><code>&gt; Globcover2009_V2.3 &lt;- raster(&quot;data-raw/Glocover2009_V2.3/GLOBCOVER_L4_200901_200912_V2.3.tif&quot;)
+&gt; Globcover2005_V2.2 &lt;- raster(&quot;data-raw/Glocover2005_V2.2/GLOBCOVER_200412_200606_V2.2_Global_CLA.tif&quot;)</code></pre>
+<p>Loading the Lao provinces polygons from <a href="https://gadm.org">GADM</a>:</p>
+<pre class="r"><code>&gt; if (! file.exists(&quot;gadm36_LAO_1_sp.rds&quot;))
++   download.file(&quot;https://biogeo.ucdavis.edu/data/gadm3.6/Rsp/gadm36_LAO_1_sp.rds&quot;, &quot;data-raw/gadm36_LAO_1_sp.rds&quot;)
+&gt; gadm36_LAO_1 &lt;- readRDS(&quot;data-raw/gadm36_LAO_1_sp.rds&quot;)</code></pre>
+<p>Selecting the polygon of Vientiane:</p>
+<pre class="r"><code>&gt; vientiane &lt;- gadm36_LAO_1[gadm36_LAO_1$NAME_1 == &quot;Vientiane [prefecture]&quot;, ]</code></pre>
+<p>Cropping:</p>
+<pre class="r"><code>&gt; Globcover2009_V2.3 &lt;- crop_raster(Globcover2009_V2.3, vientiane)
+&gt; Globcover2005_V2.2 &lt;- crop_raster(Globcover2005_V2.2, vientiane)</code></pre>
+<p>Saving to disk:</p>
+<pre class="r"><code>&gt; if (! dir.exists(&quot;data&quot;)) dir.create(&quot;data&quot;)
+&gt; writeRaster(Globcover2009_V2.3, &quot;data/Globcover2009_V2.3.tif&quot;, &quot;GTiff&quot;, overwrite = TRUE)
+&gt; writeRaster(Globcover2005_V2.2, &quot;data/Globcover2005_V2.2.tif&quot;, &quot;GTiff&quot;, overwrite = TRUE)</code></pre>
 
 
 

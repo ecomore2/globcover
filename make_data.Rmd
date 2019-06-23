@@ -44,11 +44,69 @@ knitr::knit_hooks$set(
     options(prompt = if (options$engine %in% c("sh", "bash")) "$ " else "> ")
   })
 
-knitr::opts_chunk$set(margin = TRUE, prompt = TRUE, comment = "",
+knitr::opts_chunk$set(margin = TRUE, prompt = TRUE, comment = "", eval = FALSE,
                       collapse = TRUE, cache = FALSE, autodep = TRUE,
                       dev.args = list(pointsize = 11), fig.height = 3.5,
                       fig.width = 4.24725, fig.retina = 2, fig.align = "center")
 
 options(width = 137)
+```
+
+```{r}
+library(sp)
+library(raster)
+library(ecomore)
+```
+
+Downloading the 2009 GlobCover data (** 300-m resolution**) from
+[ESA](http://due.esrin.esa.int/page_globcover.php):
+
+```{r}
+if (! dir.exists("data-raw")) dir.create("data-raw")
+download.file("http://due.esrin.esa.int/files/Globcover2009_V2.3_Global_.zip", "data-raw/Globcover2009_V2.3.zip")
+download.file("http://due.esrin.esa.int/files/Globcover_V2.2_Global.zip", "data-raw/Globcover2005_V2.2.zip")
+```
+ 
+Unzipping:
+
+```{r}
+unzip("data-raw/Globcover2009_V2.3.zip", exdir = "data-raw/Glocover2009_V2.3")
+unzip("data-raw/Globcover2005_V2.2.zip", exdir = "data-raw/Glocover2005_V2.2")
+```
+
+Loading:
+
+```{r}
+Globcover2009_V2.3 <- raster("data-raw/Glocover2009_V2.3/GLOBCOVER_L4_200901_200912_V2.3.tif")
+Globcover2005_V2.2 <- raster("data-raw/Glocover2005_V2.2/GLOBCOVER_200412_200606_V2.2_Global_CLA.tif")
+```
+
+Loading the Lao provinces polygons from [GADM](https://gadm.org):
+
+```{r}
+if (! file.exists("gadm36_LAO_1_sp.rds"))
+  download.file("https://biogeo.ucdavis.edu/data/gadm3.6/Rsp/gadm36_LAO_1_sp.rds", "data-raw/gadm36_LAO_1_sp.rds")
+gadm36_LAO_1 <- readRDS("data-raw/gadm36_LAO_1_sp.rds")
+```
+
+Selecting the polygon of Vientiane:
+
+```{r}
+vientiane <- gadm36_LAO_1[gadm36_LAO_1$NAME_1 == "Vientiane [prefecture]", ]
+```
+
+Cropping:
+
+```{r}
+Globcover2009_V2.3 <- crop_raster(Globcover2009_V2.3, vientiane)
+Globcover2005_V2.2 <- crop_raster(Globcover2005_V2.2, vientiane)
+```
+
+Saving to disk:
+
+```{r}
+if (! dir.exists("data")) dir.create("data")
+writeRaster(Globcover2009_V2.3, "data/Globcover2009_V2.3.tif", "GTiff", overwrite = TRUE)
+writeRaster(Globcover2005_V2.2, "data/Globcover2005_V2.2.tif", "GTiff", overwrite = TRUE)
 ```
 
