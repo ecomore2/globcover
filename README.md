@@ -7,10 +7,10 @@
 
 <!-- badges: end -->
 
-GlobCover from [ESA](http://due.esrin.esa.int/page_globcover.php)
-proposes global raster file (300-m resolution) of land cover for 2005
-and 2009. After having been croped to the province of Vientiane
-prefecture (see [cleaning
+[GlobCover](http://due.esrin.esa.int/page_globcover.php) from
+[ESA](https://www.esa.int/ESA) proposes global raster file (300-m
+resolution) of land cover for 2005 and 2009. After having been croped to
+the province of Vientiane prefecture (see [cleaning
 pipeline](https://ecomore2.github.io/globcover/make_data.html)), the
 `.GTiff` files are available
     here:

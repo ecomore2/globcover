@@ -58,8 +58,8 @@ library(raster)
 library(ecomore)
 ```
 
-Downloading the 2009 GlobCover data (** 300-m resolution**) from
-[ESA](http://due.esrin.esa.int/page_globcover.php):
+Downloading the 2009 [GlobCover](http://due.esrin.esa.int/page_globcover.php)
+data (** 300-m resolution**) from [ESA](https://www.esa.int/ESA):
 
 ```{r}
 if (! dir.exists("data-raw")) dir.create("data-raw")
